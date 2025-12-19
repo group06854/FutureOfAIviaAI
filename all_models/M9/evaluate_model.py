@@ -53,8 +53,10 @@ if __name__ == '__main__':
 
                     with open("logs_"+data_source+".txt", "a") as myfile:
                         myfile.write('Read'+str(data_source)+'\n') 
-
-                    edges_used=1*10**6
+                    if current_min_edges ==1:
+                        edges_used=50000
+                    else:
+                        edges_used=20000
                     percent_positive_examples=1
                     batch_size=400
                     lr_enc=3*10**-5
