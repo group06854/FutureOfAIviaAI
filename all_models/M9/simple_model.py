@@ -256,18 +256,18 @@ def link_prediction_semnet(full_dynamic_graph_sparse, unconnected_vertex_pairs,
     print(f"Parameters: delta={years_delta}, cutoff={vertex_degree_cutoff}, min_edges={min_edges}")
     print(f"{'='*60}")
     
-    # 1. Extract hyperparameters (ваш формат)
+    # 1. Extract hyperparameters
     # hyper_parameters = [edges_used, percent_positive_examples, batch_size, lr_enc, rnd_seed]
     edges_used = hyper_parameters[0] if len(hyper_parameters) > 0 else 500000
     percent_positive_examples = hyper_parameters[1] if len(hyper_parameters) > 1 else 1
-    # batch_size и lr_enc не используются в VGAE модели
+    # batch_size и lr_enc 
     rnd_seed = hyper_parameters[4] if len(hyper_parameters) > 4 else 42
     
     # 2. VGAE specific hyperparameters
-    latent_dim = 32  # фиксированный размер латентного пространства
-    epochs = 100     # фиксированное количество эпох
-    lr = 0.01        # фиксированная скорость обучения
-    beta = 0.001     # фиксированный вес KL дивергенции
+    latent_dim = 32  
+    epochs = 40     
+    lr = 0.01        
+    beta = 0.001 
     
     # 3. Create model directory
     if data_source:
@@ -276,18 +276,18 @@ def link_prediction_semnet(full_dynamic_graph_sparse, unconnected_vertex_pairs,
         model_dir = "vgae_models/default"
     os.makedirs(model_dir, exist_ok=True)
     
-    # 4. Prepare graph data (используем biased версию для сбалансированных данных)
+    # 4. Prepare graph data 
     train_dynamic_graph_sparse, train_edges_for_checking, train_edges_solution = create_training_data_biased(
         full_dynamic_graph_sparse,
-        year_start - years_delta,  # Например: 2014 - 3 = 2011
-        years_delta,               # 3 года
+        year_start - years_delta, 
+        years_delta,              
         min_edges=min_edges,
         edges_used=edges_used,
         vertex_degree_cutoff=vertex_degree_cutoff,
         data_source=data_source
     )
     
-    # 5. ОБУЧАЕМСЯ ТОЛЬКО НА TRAIN ДАННЫХ
+
     edge_index = torch.tensor(train_dynamic_graph_sparse[:, :2].T, dtype=torch.long)
     
     data = {
